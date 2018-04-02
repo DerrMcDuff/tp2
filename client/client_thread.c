@@ -183,7 +183,7 @@ ct_code (void *param)
   sprintf(request, "%d ", ct->id);
   create_max_resources_for_client();
   for(int i = 0; i < num_request_per_client; i++)
-    sprintf(request, "%d ", (*max_resources_per_client + i));
+    sprintf(request, "%d ", *(max_resources_per_client + i));
   sprintf(request, "\n ");
 
   //envoie de la requete sur socket_w
@@ -196,8 +196,6 @@ ct_code (void *param)
       request_id++)
   {
     // TP2 TODO
-    // Vous devez ici coder, conjointement avec le corps de send request,
-    // le protocole d'envoi de requête.
 
     send_request (ct->id, request_id, socket_fd);
 
