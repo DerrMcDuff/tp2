@@ -4,8 +4,32 @@
 		"selected_items":
 		[
 			[
+				"nb",
+				"nb_registered_clients"
+			],
+			[
+				"print",
+				"printf\tprintf …"
+			],
+			[
+				"firs",
+				"init_first"
+			],
+			[
+				"clien",
+				"clients_nb"
+			],
+			[
+				"clie",
+				"client_processes"
+			],
+			[
 				"requ",
-				"request"
+				"requests"
+			],
+			[
+				"reu",
+				"requests"
 			],
 			[
 				"request",
@@ -32,16 +56,8 @@
 				"requests"
 			],
 			[
-				"print",
-				"print_requests"
-			],
-			[
 				"pri",
 				"printf\tprintf …"
-			],
-			[
-				"clien",
-				"client_nb"
 			],
 			[
 				"ressou",
@@ -131,7 +147,16 @@
 			"file": "server_thread.c",
 			"settings":
 			{
-				"buffer_size": 5092,
+				"buffer_size": 6937,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "banquier.c",
+			"settings":
+			{
+				"buffer_size": 1965,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -140,43 +165,16 @@
 			"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/TestingDereck.c",
 			"settings":
 			{
-				"buffer_size": 984,
+				"buffer_size": 1118,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/dereckmcduff/Downloads/banquier.c",
+			"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/GNUmakefile",
 			"settings":
 			{
-				"buffer_size": 2137,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/Users/dereckmcduff/Downloads/banquier.h",
-			"settings":
-			{
-				"buffer_size": 375,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.c",
-			"settings":
-			{
-				"buffer_size": 5021,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "main.c",
-			"settings":
-			{
-				"buffer_size": 1106,
+				"buffer_size": 1910,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -185,7 +183,43 @@
 			"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/main.c",
 			"settings":
 			{
-				"buffer_size": 1177,
+				"buffer_size": 1182,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "server_thread.h",
+			"settings":
+			{
+				"buffer_size": 561,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.h",
+			"settings":
+			{
+				"buffer_size": 813,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "main.c",
+			"settings":
+			{
+				"buffer_size": 1111,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "banquier.h",
+			"settings":
+			{
+				"buffer_size": 713,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -275,6 +309,11 @@
 	},
 	"file_history":
 	[
+		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.c",
+		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/banquier.h",
+		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/banquier.c",
+		"/Users/dereckmcduff/Downloads/banquier.c",
+		"/Users/dereckmcduff/Downloads/banquier.h",
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/bateauxt.txt",
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/test_tp1.py",
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/bombest.txt",
@@ -287,7 +326,6 @@
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/bombest",
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/bateaux.txt",
 		"/Users/dereckmcduff/Documents/School/tpStructure/tp2/bateauxt",
-		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.c",
 		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.h",
 		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/server/main.c",
 		"/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/server/server_thread.c",
@@ -317,6 +355,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"ressource_nbressource_nb",
+			"ressource_nb",
 			"int num_client = atoi (argv);",
 			"print"
 		],
@@ -336,7 +376,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -345,15 +385,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5092,
+						"buffer_size": 6937,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2404,
-								2404
+								2298,
+								2298
 							]
 						],
 						"settings":
@@ -363,27 +403,56 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2558.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/TestingDereck.c",
+					"file": "banquier.c",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 984,
+						"buffer_size": 1965,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								405,
-								405
+								1689,
+								1689
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 794.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/TestingDereck.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1118,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								136,
+								136
 							]
 						],
 						"settings":
@@ -395,36 +464,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/Users/dereckmcduff/Downloads/banquier.c",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2137,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								233,
-								233
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]
@@ -435,19 +475,78 @@
 			[
 				{
 					"buffer": 3,
-					"file": "/Users/dereckmcduff/Downloads/banquier.h",
+					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/GNUmakefile",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 375,
+						"buffer_size": 1910,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								141,
-								141
+								175,
+								175
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Makefile/Makefile.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/main.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1182,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								915,
+								915
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 314.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "server_thread.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 561,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								47,
+								47
 							]
 						],
 						"settings":
@@ -462,56 +561,48 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.c",
+					"buffer": 6,
+					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/client_thread.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5021,
+						"buffer_size": 813,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								215,
-								215
+								107,
+								107
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/C++/C++.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 17.0,
+						"translation.y": 104.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 5,
+					"buffer": 7,
 					"file": "main.c",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1106,
+						"buffer_size": 1111,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								109,
-								109
+								69,
+								69
 							]
 						],
 						"settings":
@@ -521,46 +612,38 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 169.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 7,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 6,
-					"file": "/Users/dereckmcduff/Documents/School/TPOS/TP2/tp2/client/main.c",
+					"buffer": 8,
+					"file": "banquier.h",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1177,
+						"buffer_size": 713,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								214,
-								214
+								61,
+								61
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/C++/C.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/C++/C++.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 235.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 6,
 					"type": "text"
 				}
 			]
@@ -589,18 +672,6 @@
 				0,
 				2,
 				1
-			],
-			[
-				0,
-				1,
-				1,
-				2
-			],
-			[
-				1,
-				1,
-				2,
-				2
 			]
 		],
 		"cols":
@@ -612,7 +683,6 @@
 		"rows":
 		[
 			0.0,
-			0.5,
 			1.0
 		]
 	},
@@ -663,7 +733,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 2,
+	"selected_group": 0,
 	"settings":
 	{
 	},

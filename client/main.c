@@ -24,8 +24,12 @@ main (int argc, char *argv[])
   for (unsigned int i = 0; i < num_resources; i++)
     provisioned_resources[i] = atoi (argv[i + 4]);
   
+
+
   send_client_amount (num_resources, num_clients);
   exit(0);
+
+
 
   client_thread *client_threads
     = malloc (num_clients * sizeof (client_thread));

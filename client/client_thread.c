@@ -133,15 +133,6 @@ ct_socket()
   return client_socket;
 }
 
-void
-send_test(void *param) {
-  request_sent = request_sent + 1;
-  int socket = ct_socket();
-  FILE *socket_w = fdopen (socket, "w");
-  fprintf (socket_w, "BEG 5\n");
-  fflush(socket_w);
-}
-
 void *
 ct_code (void *param)
 {
@@ -153,7 +144,7 @@ ct_code (void *param)
   char *request = NULL;
 
   printf("Enter the request:\n");
-  if(fgets(request, 256, stdin) > 0){
+  if(fgets(request, 256, stdin) == 0){
     
       fprintf(stderr, "BRUH\n");
     //envoie la requete au serveur
@@ -231,7 +222,7 @@ ct_wait_server ()
 //        sleep (4);
 //    }
 //  }
-
+  sleep(4);
   // TP2 TODO:END
   
 }
@@ -275,4 +266,11 @@ st_print_results (FILE * fd, bool verbose)
     fprintf (fd, "%d %d %d %d %d\n", count_accepted, count_on_wait,
         count_invalid, count_dispatched, request_sent);
   }
+}
+
+void
+send_client_amount(int ressource_nb, int client_nb) {
+  int socket = ct_socket();
+  FILE *socket_w = fdopen (socket, "w");
+  fprintf (socket_w, "BEG %d %d\n",ressource_nb,client_nb);
 }

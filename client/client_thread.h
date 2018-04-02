@@ -30,11 +30,14 @@ struct client_thread
   pthread_attr_t pt_attr;
 };
 
-
+int random_ressources_request (int max_res, int live_res);
+void send_request (int client_id, int request_id, int socket_fd);
+int ct_socket();
 void ct_init (client_thread *);
 void ct_create_and_start (client_thread *);
 void ct_wait_server ();
 
 void st_print_results (FILE *, bool);
+void send_client_amount(int ressource_nb, int client_nb);
 
 #endif // CLIENTTHREAD_H
