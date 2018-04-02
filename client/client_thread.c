@@ -19,7 +19,7 @@ int port_number = -1;
 int num_request_per_client = -1;
 int num_resources = -1;
 int *provisioned_resources = NULL;
-
+int *max_resources = NULL;
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
 
@@ -47,15 +47,66 @@ unsigned int request_sent = 0;
 // ou négatives.
 // Assurez-vous que la dernière requête d'un client libère toute les ressources
 // qu'il a jusqu'alors accumulées.
+
+int 
+random_ressources_request (int max_res, int live_res)
+{
+  //on choisit une qte aleatoire de la meme ressource par requete
+  //sans depasser le maximum pour le client
+  //on choisit aleatoire si on demande ou si on libere une ressource
+  int req;
+  int r = rand()%(max_res);
+  while((r+live_res > max_res) || (-r+live_res > max_res)){
+   r = rand()%(max_res); 
+  }
+  int b = rand()%2;
+  if(b==0) req = r;
+  else req = -r;
+
+  return req;
+}
+
 void
 send_request (int client_id, int request_id, int socket_fd)
 {
   // TP2 TODO
+   
+    char request[64];
+    strcpy(request, "REQ ");
+    sprintf(request, "%d ", socket_fd);
+    
+    fprintf (stdout, "Client %d is sending its %d request\n", client_id,
+        request_id);
 
-  fprintf (stdout, "Client %d is sending its %d request\n", client_id,
-      request_id);
-  
-  // TP2 TODO:END
+    for (int i = 0; i < num_request_per_client ; i++) {
+      for (int j = 0; j < num_resources; j++) {
+        
+        int req;
+        int max_res = *(max_resources+j);
+        int prov_res = *(provisioned_resources+j);
+        
+        //si c'est la derniere requete il faut s'assurer que toutes 
+        //les ressources sont liberees
+        if(i == num_request_per_client) {
+          req = -(prov_res);
+        }
+        
+        //sinon on alloue (ou libere) un nombre aleatoire de ressources
+        else {
+          req = random_ressources_request(max_res, prov_res);
+        }
+        
+        //rajouter la requete de cette ressource
+        sprintf(request, "%d ", socket_fd);
+      }
+      
+      
+      if(send(socket_fd, request, 64, 0) < 0){
+        perror("Send failed");
+        exit(1);
+      }
+    }
+    // TP2 TODO:END
 
 }
 
@@ -63,13 +114,18 @@ int
 ct_socket()
 {
   int client_socket = socket(AF_INET,SOCK_STREAM,0);
+  
+  if (client_socket < 0)
+    perror ("ERROR opening socket");
+    exit(1);
+  
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port_number); 
   addr.sin_addr.s_addr = htonl(0x7f000001);
   
   if (connect(client_socket, (struct sockaddr*)&addr, sizeof(addr))<0) {
-    perror("ERROR creating socket :(");
+    perror("ERROR on binding :(");
     exit(1);
   }
   return client_socket;
@@ -84,6 +140,11 @@ send_test(void *param) {
   fflush(socket_w);
 }
 
+void 
+send_max_resources(void *res, int counter){
+    *(max_resources + counter) = param;
+}
+
 void
 send_client_amount(int ressource_nb, int client_nb) {
   request_sent = request_sent + 1;
@@ -93,35 +154,70 @@ send_client_amount(int ressource_nb, int client_nb) {
   fflush(socket_w);
 }
 
+//Fonction d'initialisation des client-threads via INI
+void
+create_INI_thread(ct)
+{
+  char request[64];
+  strcpy(request, "INI ");
+  sprintf(request, "%d ", ct->id);
+  
+  for (int i = 0; i < num_request_per_client ; i++) {
+    for (int j = 0; j < num_resources; j++) {
+      
+      *max_resources = rand()%(*max_resources+j);
+      //si c'est la derniere requete il faut s'assurer que toutes 
+      //les ressources sont liberees
+      if(i == num_request_per_client) {
+        req = -(prov_res);
+      }
+      
+      //sinon on alloue (ou libere) un nombre aleatoire de ressources
+      else {
+        req = random_ressources_request(max_res, prov_res);
+      }
+      
+      //rajouter la requete de cette ressource
+      sprintf(request, "%d ", socket_fd);
+    }
+  }
+
+
+  fputs(request, socket_w);
+  
+  if(strncmp(strtok(request, " "),"INI", 3) == 0){
+      
+      ct->id = * strtok(NULL, " ");
+        
+      while(strtok(NULL, " ") != NULL){
+          //mettre le pointeur de max resources sur la qte max de la 1e ressource
+          //mettre le pointeur des ressources allouees sur la valeur 0
+          //incrementer le pointeur pour les prochaines resources
+          *max_resources = atoi(strtok(NULL, " "));
+          *provisioned_resources = 0;
+          max_resources++;
+          provisioned_resources++;
+        }
+        
+    } else if(strncmp(strtok(NULL, " "),"CLO", 3) == 0){
+      
+    }
+  
+  }else {
+    perror("Request not valid.");
+    exit(1);
+  }
+}
+
 void *
 ct_code (void *param)
 {
   int socket_fd = -1;
   client_thread *ct = (client_thread *) param;
   ct_socket();
-//  int client_socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-  //  client_thread *ct = (client_thread *) param;
-
+  
   // TP2 TODO
-  
-  // Connection au server.
-  //  GESTION D'ERREURS 
-//  if (client_socket_fd < 0)
-//    perror ("ERROR opening socket");
-//    exit(1);
-//
-//  struct sockaddr_in addr;
-//  addr.sin_family = AF_INET;
-//  addr.sin_port = htons(port_number); 
-//  addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-  
-  
-  // Connect client socket to server.
-//  if(connect(client_socket_fd, &addr, sizeof(addr) < 0))
-//      perror ("ERROR on binding");
-  
-  // Vous devez ici faire l'initialisation des petits clients (`INI`).
-  
+  create_INI_thread(ct);
   
   // TP2 TODO:END
 
@@ -129,7 +225,6 @@ ct_code (void *param)
   for (unsigned int request_id = 0; request_id < num_request_per_client;
       request_id++)
   {
-
     // TP2 TODO
     // Vous devez ici coder, conjointement avec le corps de send request,
     // le protocole d'envoi de requête.

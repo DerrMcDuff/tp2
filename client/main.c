@@ -19,11 +19,15 @@ main (int argc, char *argv[])
   num_resources = argc - 4;
 
   
-  
   provisioned_resources = malloc (num_resources * sizeof (int));
   for (unsigned int i = 0; i < num_resources; i++)
     provisioned_resources[i] = atoi (argv[i + 4]);
+<<<<<<< HEAD
+
+=======
+    send_max_resources (provisioned_resources[i], i);
   
+>>>>>>> 04a1e5e9fc73033486d0a515b492570c147d4358
   send_client_amount (num_resources, num_clients);
   exit(0);
 
@@ -36,9 +40,7 @@ main (int argc, char *argv[])
     ct_create_and_start (&(client_threads[i]));
   }
   
-  
   ct_wait_server ();
-
 
   // Affiche le journal.
   st_print_results (stdout, true);
