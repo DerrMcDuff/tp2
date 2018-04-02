@@ -155,26 +155,17 @@ send_client_amount(int ressource_nb, int client_nb) {
   fflush(socket_w);
 }
 
-//Fonction d'initialisation des client-threads via INI
-char*
-create_INI_thread(int ctid)
+//Fonction qui donne la valeur max des ressources d'un client-thread
+void 
+create_max_resources_for_client()
 {
-  char request[64];
-  strcpy(request, "INI ");
-  sprintf(request, "%d ", ctid);
-  
+  max_resources_per_client = malloc (num_resources * sizeof (int));
   //Creation aleatoire des ressources maximales 
   //qu'un client_thread peux demander
-  for (int i = 0; i < num_request_per_client ; i++) {
-    for (int j = 0; j < num_resources; j++) {
-      *(max_resources_per_client + j) = rand()%(*max_resources + j);
-      *(provisioned_resources + j) = 0;
-      sprintf(request, "%d ", ctid);
-      if(j==(num_resources-1)) sprintf(request, "\n ");
-      *provisioned_resources = 0;
-    }
+  for (int j = 0; j < num_resources; j++) {
+    *(max_resources_per_client + j) = rand()%(*max_resources + j);
+    *(provisioned_resources + j) = 0;
   }
-  return request;
 }
 
 void *
@@ -183,10 +174,18 @@ ct_code (void *param)
   client_thread *ct = (client_thread *) param;
   int socket_fd = ct_socket();
   FILE *socket_w = fdopen (socket_fd, "w");
-  // TP2 TODO
-  char request[64];
-  *request = create_INI_thread(ct->id);
   
+  // TP2 TODO
+  
+  //Initialisation d'un client-thread 
+  char request[64];
+  strcpy(request, "INI ");
+  sprintf(request, "%d ", ct->id);
+  create_max_resources_for_client();
+  for(int i = 0; i < num_request_per_client; i++)
+    sprintf(request, "%d ", (*max_resources_per_client + i));
+  sprintf(request, "\n ");
+
   //envoie de la requete sur socket_w
   fputs(request, socket_w);
   
