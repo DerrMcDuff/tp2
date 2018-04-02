@@ -43,7 +43,6 @@ main (int argc, char *argv[])
   
   ct_wait_server ();
 
-
   // Affiche le journal.
   st_print_results (stdout, true);
   FILE *fp = fopen("client.log", "w");
