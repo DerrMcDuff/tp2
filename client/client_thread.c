@@ -20,6 +20,7 @@ int num_request_per_client = -1;
 int num_resources = -1;
 int *provisioned_resources = NULL;
 int *max_resources = NULL;
+int *max_resources_per_client = NULL;
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
 
@@ -82,7 +83,7 @@ send_request (int client_id, int request_id, int socket_fd)
       for (int j = 0; j < num_resources; j++) {
         
         int req;
-        int max_res = *(max_resources+j);
+        int max_res = *(max_resources_per_client+j);
         int prov_res = *(provisioned_resources+j);
         
         //si c'est la derniere requete il faut s'assurer que toutes 
@@ -141,8 +142,8 @@ send_test(void *param) {
 }
 
 void 
-send_max_resources(void *res, int counter){
-    *(max_resources + counter) = param;
+send_max_resources(int res, int counter){
+    *(max_resources + counter) = res;
 }
 
 void
@@ -155,69 +156,39 @@ send_client_amount(int ressource_nb, int client_nb) {
 }
 
 //Fonction d'initialisation des client-threads via INI
-void
-create_INI_thread(ct)
+char*
+create_INI_thread(int ctid)
 {
   char request[64];
   strcpy(request, "INI ");
-  sprintf(request, "%d ", ct->id);
+  sprintf(request, "%d ", ctid);
   
+  //Creation aleatoire des ressources maximales 
+  //qu'un client_thread peux demander
   for (int i = 0; i < num_request_per_client ; i++) {
     for (int j = 0; j < num_resources; j++) {
-      
-      *max_resources = rand()%(*max_resources+j);
-      //si c'est la derniere requete il faut s'assurer que toutes 
-      //les ressources sont liberees
-      if(i == num_request_per_client) {
-        req = -(prov_res);
-      }
-      
-      //sinon on alloue (ou libere) un nombre aleatoire de ressources
-      else {
-        req = random_ressources_request(max_res, prov_res);
-      }
-      
-      //rajouter la requete de cette ressource
-      sprintf(request, "%d ", socket_fd);
+      *(max_resources_per_client + j) = rand()%(*max_resources + j);
+      *(provisioned_resources + j) = 0;
+      sprintf(request, "%d ", ctid);
+      if(j==(num_resources-1)) sprintf(request, "\n ");
+      *provisioned_resources = 0;
     }
   }
-
-
-  fputs(request, socket_w);
-  
-  if(strncmp(strtok(request, " "),"INI", 3) == 0){
-      
-      ct->id = * strtok(NULL, " ");
-        
-      while(strtok(NULL, " ") != NULL){
-          //mettre le pointeur de max resources sur la qte max de la 1e ressource
-          //mettre le pointeur des ressources allouees sur la valeur 0
-          //incrementer le pointeur pour les prochaines resources
-          *max_resources = atoi(strtok(NULL, " "));
-          *provisioned_resources = 0;
-          max_resources++;
-          provisioned_resources++;
-        }
-        
-    } else if(strncmp(strtok(NULL, " "),"CLO", 3) == 0){
-      
-    }
-  
-  }else {
-    perror("Request not valid.");
-    exit(1);
-  }
+  return request;
 }
 
 void *
 ct_code (void *param)
 {
-  int socket_fd = -1;
+  int socket_fd = ct_socket();
   client_thread *ct = (client_thread *) param;
-  ct_socket();
-  
+  FILE *socket_w = fdopen (socket_fd, "w");
   // TP2 TODO
-  create_INI_thread(ct);
+  char request[64];
+  *request = create_INI_thread(ct->id);
+  
+  //envoie de la requete sur socket_w
+  fputs(request, socket_w);
   
   // TP2 TODO:END
 
