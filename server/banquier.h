@@ -23,13 +23,16 @@ typedef struct Request
 // Listes qui seront utilisées
 int ressource_nb;
 int *available;
-Client_Process *client_processes;
-Request *incoming_requests;
-Request *unsatisfied_requests;
-Request *queued_requests;
+extern Client_Process *client_processes;
+extern Request *incoming_requests;
+extern Request *unsatisfied_requests;
+extern Request *queued_requests;
 
-void add_request(Request **requests, Client_Process *client);
+void add_request(Request **requests, int *ressources, int client);
+void add_existing_request(Request **requests, Request *req);
 void remove_first(Request **requests);
 void print_requests(Request **requests);
-void bankers_algo(Request *req, int nbRes, int nbClient);
+int evaluate_request(Request* request);
+void evaluate_incoming_requests();
 void prepare_with(int clients_nb, int r_n);
+Client_Process *get_process(int id);

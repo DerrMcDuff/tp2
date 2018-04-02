@@ -54,7 +54,7 @@ bankers_algo(Request *req, int nbRes, int nbClient)
 {
 
   int need[nbRes];
-  //verifie si la requete est legit
+  //verifie si la requete est legitime
   // if(client_processes[id] == req.demandeur.id)
   
   for (int i = 0; i < nbRes; i++)
@@ -67,12 +67,12 @@ bankers_algo(Request *req, int nbRes, int nbClient)
   }
   
   //Si la requete est acceptee elle est mise dans la file d'exec
-  // for (int i = 0; i < nbRes; i++)
-  // {
-  //  // satisfiedQueue(req);
-  //  available[i] = available[i] + allocation[i];
-  //  *req = void;
-  // }
+  for (int i = 0; i < nbRes; i++)
+  {
+   
+   available[i] = available[i] + allocation[i];
+   *req = void;
+  }
 }
 
 void
