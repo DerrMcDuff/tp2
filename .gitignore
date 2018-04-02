@@ -4,3 +4,5 @@ build/tp2_server
 *.o
 build/tp2_server
 *.o
+build/client/client_thread.o
+build/tp2_client
