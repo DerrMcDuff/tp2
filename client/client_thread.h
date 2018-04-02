@@ -20,6 +20,7 @@ extern int num_resources;
 /* Quantité disponible pour chaque resource.  */
 extern int *provisioned_resources;
 
+extern int *max_resources;
 
 typedef struct client_thread client_thread;
 struct client_thread
@@ -34,7 +35,7 @@ void ct_init (client_thread *);
 void ct_create_and_start (client_thread *);
 void ct_wait_server ();
 
-void st_print_results (FILE *, bool);
+ void st_print_results (FILE *, bool);
 void send_client_amount (int ressource_nb, int client_nb);
 
 #endif // CLIENTTHREAD_H

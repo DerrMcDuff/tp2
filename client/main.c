@@ -23,6 +23,7 @@ main (int argc, char *argv[])
   provisioned_resources = malloc (num_resources * sizeof (int));
   for (unsigned int i = 0; i < num_resources; i++)
     provisioned_resources[i] = atoi (argv[i + 4]);
+    send_max_resources (provisioned_resources[i], i);
   
   send_client_amount (num_resources, num_clients);
   exit(0);
