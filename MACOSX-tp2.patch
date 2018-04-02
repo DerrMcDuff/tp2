@@ -1,0 +1,36 @@
+diff --git a/server/server_thread.c b/server/server_thread.c
+index 02d4974..5689461 100644
+--- a/server/server_thread.c
++++ b/server/server_thread.c
+@@ -10,6 +10,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
++#include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ 
+@@ -157,12 +158,23 @@ st_code (void *param)
+ void
+ st_open_socket (int port_number)
+ {
++#ifndef SOCK_NONBLOCK
++  server_socket_fd = socket (AF_INET, SOCK_STREAM, 0);
++#else
+   server_socket_fd = socket (AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
++#endif
+   if (server_socket_fd < 0) {
+     perror ("ERROR opening socket");
+     exit(1);
+   }
+ 
++#ifndef SOCK_NONBLOCK // If SOCK_NONBLOCK not available
++  {
++    int sockopt = fcntl(server_socket_fd, F_GETFL);
++    fcntl(server_socket_fd, F_SETFL, sockopt | O_NONBLOCK);
++  }
++#endif
++
+   if (setsockopt(server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &(int){ 1 }, sizeof(int)) < 0) {
+     perror("setsockopt()");
+     exit(1);
