@@ -9,7 +9,7 @@
 #include "client_thread.h"
 
 // Socket library
-//#include <netdb.h>
+#include <netdb.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -21,9 +21,10 @@ int num_resources = -1;
 int *provisioned_resources = NULL;
 int *max_resources = NULL;
 int *max_resources_per_client = NULL;
+int socket_fd;
+
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
-
 
 // Variable du journal.
 // Nombre de requête acceptée (ACK reçus en réponse à REQ)
@@ -42,13 +43,6 @@ unsigned int count_dispatched = 0;
 unsigned int request_sent = 0;
 
 
-// Vous devez modifier cette fonction pour faire l'envoie des requêtes
-// Les ressources demandées par la requête doivent être choisies aléatoirement
-// (sans dépasser le maximum pour le client). Elles peuvent être positives
-// ou négatives.
-// Assurez-vous que la dernière requête d'un client libère toute les ressources
-// qu'il a jusqu'alors accumulées.
-
 int 
 random_ressources_request (int max_res, int live_res)
 {
@@ -57,7 +51,7 @@ random_ressources_request (int max_res, int live_res)
   //on choisit aleatoire si on demande ou si on libere une ressource
   int req;
   int r = rand()%(max_res);
-  while((r+live_res > max_res) || (-r+live_res > max_res)){
+  while((r+live_res > max_res) && (-r+live_res > max_res)){
    r = rand()%(max_res); 
   }
   int b = rand()%2;
@@ -67,8 +61,36 @@ random_ressources_request (int max_res, int live_res)
   return req;
 }
 
+//Fonction qui gere les reponses du serveur
+void 
+ct_server_response(char req[])
+{
+    char reponse[64]; // reponse du serveur
+
+    if(read(socket_fd, reponse ,255) < 0){
+      perror("ERROR reading from socket");
+    } 
+    else {
+      if(strncmp(reponse, "ACK", 3) == 0){
+        count_accepted ++;
+      }
+      else if(strncmp(reponse, "ERR", 3)==0){
+        count_invalid ++;
+      }
+      else if(strncmp(reponse, "WAIT", 4)==0){
+        count_on_wait ++;
+        
+        //Tant que la requete n'a pas ete acceptee par le serveur
+        //le client lui la renvoie
+        while(strncmp(reponse, "ACK", 3) == 0){
+          write(socket_fd, req, 64);
+        }
+      }
+    }
+}
+
 void
-send_request (int client_id, int request_id, int socket_fd)
+send_requests (int client_id, int socket_fd)
 {
   // TP2 TODO
    
@@ -76,10 +98,12 @@ send_request (int client_id, int request_id, int socket_fd)
     strcpy(request, "REQ ");
     sprintf(request, "%d ", socket_fd);
     
-    fprintf (stdout, "Client %d is sending its %d request\n", client_id,
-        request_id);
-
+    //Boucle qui genere des requetes aleatoires par client
     for (int i = 0; i < num_request_per_client ; i++) {
+      
+      fprintf (stdout, "Client %d is sending its %d request\n", client_id, i);
+
+      //Boucle qui genere les ressources demandees par requete
       for (int j = 0; j < num_resources; j++) {
         
         int req;
@@ -98,15 +122,25 @@ send_request (int client_id, int request_id, int socket_fd)
         }
         
         //rajouter la requete de cette ressource
-        sprintf(request, "%d ", socket_fd);
+        sprintf(request, "%d ", req);
       }
       
-      
-      if(send(socket_fd, request, 64, 0) < 0){
+      if(write(socket_fd, request, 64) < 0){
         perror("Send failed");
         exit(1);
+      } else {
+        
+          usleep (random () % (100 * 1000));
+          /* Attendre un petit peu (0s-0.1s) pour simuler le calcul.  */
+          /* struct timespec delay;
+            * delay.tv_nsec = random () % (100 * 1000000);
+            * delay.tv_sec = 0;
+            * nanosleep (&delay, NULL); */
+          ct_server_response(request);
       }
+      
     }
+    
     // TP2 TODO:END
 
 }
@@ -172,46 +206,28 @@ void *
 ct_code (void *param)
 {
   client_thread *ct = (client_thread *) param;
-  int socket_fd = ct_socket();
+  socket_fd = ct_socket();
   FILE *socket_w = fdopen (socket_fd, "w");
   
   // TP2 TODO
   
   //Initialisation d'un client-thread 
-  char request[64];
-  strcpy(request, "INI ");
-  sprintf(request, "%d ", ct->id);
+  char clientIni[64];
+  strcpy(clientIni, "INI ");
+  sprintf(clientIni, "%d ", ct->id);
   create_max_resources_for_client();
   for(int i = 0; i < num_request_per_client; i++)
-    sprintf(request, "%d ", *(max_resources_per_client + i));
-  sprintf(request, "\n ");
+    sprintf(clientIni, "%d ", *(max_resources_per_client + i));
+  sprintf(clientIni, "\n ");
 
   //envoie de la requete sur socket_w
-  fputs(request, socket_w);
+  fputs(clientIni, socket_w);
   
-  // TP2 TODO:END
-
-
-  for (unsigned int request_id = 0; request_id < num_request_per_client;
-      request_id++)
-  {
-    // TP2 TODO
-
-    send_request (ct->id, request_id, socket_fd);
-
-    // TP2 TODO:END
-
-    /* Attendre un petit peu (0s-0.1s) pour simuler le calcul.  */
-    usleep (random () % (100 * 1000));
-    /* struct timespec delay;
-     * delay.tv_nsec = random () % (100 * 1000000);
-     * delay.tv_sec = 0;
-     * nanosleep (&delay, NULL); */
-  }
+  //Envoie des requetes de facon aleatoire 
+  send_requests (ct->id, socket_fd);
 
   return NULL;
 }
-
 
 //
 // Vous devez changer le contenu de cette fonction afin de régler le
@@ -220,15 +236,11 @@ ct_code (void *param)
 // de ses requêtes avant de terminer l'exécution.
 //
 void
-ct_wait_server ()
+ct_wait_server (client_thread *ct)
 {
-
-  // TP2 TODO: IMPORTANT code non valide.
-
-
+  
+  
   sleep (4);
-
-  // TP2 TODO:END
   
 }
 
@@ -248,8 +260,7 @@ ct_create_and_start (client_thread * ct)
 }
 
 //
-// Affiche les données recueillies lors de l'exécution du
-// serveur.
+// Affiche les données recueillies lors de l'exécution du serveur.
 // La branche else ne doit PAS être modifiée.
 //
 void
