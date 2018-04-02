@@ -125,6 +125,7 @@
 //   addr.sin_port = htons(port_number); 
 //   addr.sin_addr.s_addr = htonl(0x7f000001);
   
+<<<<<<< HEAD
 //   if (connect(client_socket, (struct sockaddr*)&addr, sizeof(addr))<0) {
 //     perror("ERROR on binding :(");
 //     exit(1);
@@ -188,6 +189,71 @@
   
 //   //envoie de la requete sur socket_w
 //   fputs(request, socket_w);
+=======
+  if (connect(client_socket, (struct sockaddr*)&addr, sizeof(addr))<0) {
+    perror("ERROR on binding :(");
+    exit(1);
+  }
+  return client_socket;
+}
+
+void
+send_test(void *param) {
+  request_sent = request_sent + 1;
+  int socket = ct_socket();
+  FILE *socket_w = fdopen (socket, "w");
+  fprintf (socket_w, "BEG 6\n");
+  fflush(socket_w);
+}
+
+void 
+send_max_resources(int res, int counter){
+    *(max_resources + counter) = res;
+}
+
+void
+send_client_amount(int ressource_nb, int client_nb) {
+  request_sent = request_sent + 1;
+  int socket = ct_socket();
+  FILE *socket_w = fdopen (socket, "w");
+  fprintf (socket_w, "BEG %d %d\n",ressource_nb,client_nb);
+  fflush(socket_w);
+}
+
+//Fonction qui donne la valeur max des ressources d'un client-thread
+void 
+create_max_resources_for_client()
+{
+  max_resources_per_client = malloc (num_resources * sizeof (int));
+  //Creation aleatoire des ressources maximales 
+  //qu'un client_thread peux demander
+  for (int j = 0; j < num_resources; j++) {
+    *(max_resources_per_client + j) = rand()%(*max_resources + j);
+    *(provisioned_resources + j) = 0;
+  }
+}
+
+void *
+ct_code (void *param)
+{
+  client_thread *ct = (client_thread *) param;
+  int socket_fd = ct_socket();
+  FILE *socket_w = fdopen (socket_fd, "w");
+  
+  // TP2 TODO
+  
+  //Initialisation d'un client-thread 
+  char request[64];
+  strcpy(request, "INI ");
+  sprintf(request, "%d ", ct->id);
+  create_max_resources_for_client();
+  for(int i = 0; i < num_request_per_client; i++)
+    sprintf(request, "%d ", (*max_resources_per_client + i));
+  sprintf(request, "\n ");
+
+  //envoie de la requete sur socket_w
+  fputs(request, socket_w);
+>>>>>>> 55fb55b2c735f872b4d69aad751b5a1dbe48a448
   
 //   // TP2 TODO:END
 
