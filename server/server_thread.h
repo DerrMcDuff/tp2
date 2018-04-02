@@ -9,7 +9,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-extern bool accepting_connections;
+bool accepting_connections;
 
 typedef struct server_thread server_thread;
 struct server_thread

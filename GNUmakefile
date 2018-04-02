@@ -1,5 +1,6 @@
 CLIENT_DIR=client
 SERVER_DIR=server
+
 BUILD_DIR=build
 TIMEOUT=10
 VALGRIND=valgrind --leak-check=yes --error-exitcode=1
@@ -67,3 +68,4 @@ $(BUILD_DIR)/server/main.o $(BUILD_DIR)/server/server_thread.o: \
     server/server_thread.h
 $(BUILD_DIR)/client/main.o $(BUILD_DIR)/client/client_thread.o: \
     client/client_thread.h
+

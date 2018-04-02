@@ -9,18 +9,18 @@
 #include <unistd.h>
 
 /* Port TCP sur lequel le serveur attend des connections.  */
-extern int port_number;
+int port_number;
 
 /* Nombre de requêtes que chaque client doit envoyer.  */
-extern int num_request_per_client;
+int num_request_per_client;
 
 /* Nombre de resources différentes.  */
-extern int num_resources;
+int num_resources;
 
 /* Quantité disponible pour chaque resource.  */
-extern int *provisioned_resources;
+int *provisioned_resources;
 
-extern int *max_resources;
+int *max_resources;
 
 typedef struct client_thread client_thread;
 struct client_thread

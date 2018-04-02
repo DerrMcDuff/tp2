@@ -56,6 +56,12 @@ unsigned int clients_ended = 0;
 
 // TODO: Ajouter vos structures de données partagées, ici.
 
+// int main(int argc, char const *argv[])
+// {
+  
+//   return 0;
+// }
+
 static void sigint_handler(int signum) {
   // Code terminaison.
   accepting_connections = 0;
@@ -279,7 +285,7 @@ void remove_first(Request **requests)
 
 Client_Process *get_process(int id)
 {
-  for (int i; i<nb_registered_clients; i++) 
+  for (int i = 0; i<nb_registered_clients; i++) 
   {
     if (client_processes[i].id == id) 
     {
