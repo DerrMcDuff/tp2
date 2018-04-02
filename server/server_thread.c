@@ -224,12 +224,14 @@ st_print_results (FILE * fd, bool verbose)
   }
 }
 
-void add_request(Request **requests, Client_Process *client)
+void add_request(Request **requests, int *ressources, int client)
 {
   if (*requests == NULL)
   {
     *requests = malloc(sizeof(Request));
-    (*requests)->demandeur = client;
+    (*requests)->demandeur = get_process(client);
+    (*requests)->req = malloc(ressource_nb * sizeof(int));
+    (*requests)->req = ressources;
     (*requests)->next = NULL;
   }
   else
@@ -237,19 +239,54 @@ void add_request(Request **requests, Client_Process *client)
     Request *current = (*requests);
     while (current->next != NULL) 
     {
-          current = current->next;
-      }
-      current->next = malloc(sizeof(Request));
-      current->next->demandeur = client;
-      current->next->next = NULL;
+        current = current->next;
+    }
+    current->next = malloc(sizeof(Request));
+    current->req = malloc(ressource_nb * sizeof(int));
+    current->req = ressources;
+    current->next->demandeur = get_process(client);;
+    current->next->next = NULL;
   }
+}
+
+void move_existing_request(Request **old_requests, Request **requests, Request *req)
+{
+  if (*requests == NULL)
+  {
+    *requests = req;
+  }
+  else
+  {
+    Request *current = (*requests);
+    while (current->next != NULL) 
+    {
+        current = current->next;
+    }
+    current->next = req;
+  }
+  remove_first(old_requests);
 }
 
 void remove_first(Request **requests) 
 {
   Request *old = *requests;
   *requests = (*requests)->next;
+  free(old->req);
   free(old);
+}
+
+
+
+Client_Process *get_process(int id)
+{
+  for (int i; i<nb_registered_clients; i++) 
+  {
+    if (client_processes[i].id == id) 
+    {
+      return &client_processes[i];
+    }
+  }
+  return NULL;
 }
 
 void print_requests(Request **requests) 
@@ -259,8 +296,8 @@ void print_requests(Request **requests)
   while (current->next != NULL) 
   {
     printf("%d\n",current->next->demandeur->id);
-        current = current->next;
-    }
+    current = current->next;
+  }
 }
 
 
@@ -268,46 +305,48 @@ void print_requests(Request **requests)
 //Si oui, elle est mise dans la file dattente
 //Sinon, elle reste dans la file des requetes
 void 
-bankers_algo(Request *req, int nbRes, int nbClient)
+evaluate_incoming_requests()
 {
-
-  int need[nbRes];
-  //verifie si la requete est legit
-  // if(client_processes[id] == req.demandeur.id)
-  
-  for (int i = 0; i < nbRes; i++)
+  Request *current = incoming_requests;
+  while (current->next != NULL) 
   {
-    need[i] = req->demandeur->max[i] - req->demandeur->alloc[i];
-    if (need[i] > available[i])
-    { // la requete ne peux etre satisfaite pour l'instant :(
-      exit(1);
-    }
+    evaluate_request(current);
+    current = current->next;
   }
   
-  //Si la requete est acceptee elle est mise dans la file d'exec
-  // for (int i = 0; i < nbRes; i++)
-  // {
-  //  // satisfiedQueue(req);
-  //  available[i] = available[i] + allocation[i];
-  //  *req = void;
-  // }
+}
+
+int
+evaluate_request(Request* request)
+{
+  int need[ressource_nb];
+  for (int i = 0; i < ressource_nb; i++)
+  {
+    need[i] = request->demandeur->max[i] - request->demandeur->alloc[i];
+    if (need[i]<0) {
+      return 1;
+    }
+    if (request->req[i] > available[i])
+    { // la requete ne peux etre satisfaite pour l'instant :(
+      return 1;
+    }
+  }
+    // Ajoute la requete a la file
+    move_existing_request(&incoming_requests,&queued_requests,request);
+    return 0;
 }
 
 void
 prepare_with(int clients_nb, int r_n)
 {
   ressource_nb = r_n;
-  client_processes = malloc (clients_nb * sizeof (struct Client_Process));
-  // for (int i = 0; i < clients_nb; i++)
-  // {
-  //  client_processes[i] = malloc (ressource_nb * sizeof (int));
-  // }
+  Client_Process *client_processes = malloc (clients_nb * sizeof (struct Client_Process));
+  for (int i = 0; i < clients_nb; i++)
+  {
+   client_processes[i].alloc = malloc (ressource_nb * sizeof (int));
+   client_processes[i].max = malloc (ressource_nb * sizeof (int));
+  }
 }
-
-
-
-
-
 
 
 

@@ -28,7 +28,7 @@ main (int argc, char *argv[])
   }
   for (unsigned int i = 0; i < num_resources; i++) {
     provisioned_resources[i] = atoi (argv[i + 4]);
-    // send_max_resources (provisioned_resources[i], i);
+    send_max_resources (provisioned_resources[i], i);
   }
     
     

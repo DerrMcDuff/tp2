@@ -30,12 +30,11 @@ struct client_thread
   pthread_attr_t pt_attr;
 };
 
-
 void ct_init (client_thread *);
 void ct_create_and_start (client_thread *);
 void ct_wait_server ();
 
- void st_print_results (FILE *, bool);
+void st_print_results (FILE *, bool);
 void send_client_amount (int ressource_nb, int client_nb);
 
 #endif // CLIENTTHREAD_H
