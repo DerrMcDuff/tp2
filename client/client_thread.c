@@ -24,6 +24,7 @@ int *max_resources = NULL;
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
 
+
 // Variable du journal.
 // Nombre de requête acceptée (ACK reçus en réponse à REQ)
 unsigned int count_accepted = 0;
