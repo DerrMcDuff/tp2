@@ -2,3 +2,4 @@
 server/complete.sublime-workspace
 build/tp2_server
 *.o
+build/tp2_server
