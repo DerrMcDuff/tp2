@@ -323,11 +323,9 @@ evaluate_request(Request* request)
   for (int i = 0; i < ressource_nb; i++)
   {
     need[i] = request->demandeur->max[i] - request->demandeur->alloc[i];
-    if (need[i]<0) {
-      return 1;
-    }
-    if (request->req[i] > available[i])
+    if ((request->req[i] > available[i]) || (need[i]<0))
     { // la requete ne peux etre satisfaite pour l'instant :(
+      move_existing_request(&incoming_requests,&queued_requests,request);
       return 1;
     }
   }

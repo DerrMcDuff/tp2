@@ -26,14 +26,11 @@ main (int argc, char *argv[])
     send_max_resources (provisioned_resources[i], i);
 
   }
-<<<<<<< HEAD
+  
   for (unsigned int i = 0; i < num_resources; i++) {
     provisioned_resources[i] = atoi (argv[i + 4]);
     send_max_resources (provisioned_resources[i], i);
   }
-    
-=======
->>>>>>> 55fb55b2c735f872b4d69aad751b5a1dbe48a448
     
   send_client_amount (num_resources, num_clients);
   exit(0);
