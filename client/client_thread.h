@@ -20,6 +20,7 @@ extern int num_resources;
 /* Quantité disponible pour chaque resource.  */
 extern int *provisioned_resources;
 
+/* Quantite maximale pour chaque resource. */
 extern int *max_resources;
 
 typedef struct client_thread client_thread;

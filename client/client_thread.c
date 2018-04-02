@@ -58,6 +58,9 @@ random_ressources_request (int max_res, int live_res)
   //on choisit aleatoire si on demande ou si on libere une ressource
   int req;
   int r = rand()%(max_res);
+  while((r+live_res > max_res) || (-r+live_res > max_res)){
+   r = rand()%(max_res); 
+  }
   int b = rand()%2;
   if(b==0) req = r;
   else req = -r;
