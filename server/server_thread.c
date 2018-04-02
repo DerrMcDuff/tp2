@@ -64,6 +64,7 @@ static void sigint_handler(int signum) {
 void
 st_init ()
 {
+  printf("hello");
   // Handle interrupt
   signal(SIGINT, &sigint_handler);
 
@@ -145,9 +146,9 @@ st_code (void *param)
   while (accepting_connections)
   {
     // Wait for a I/O socket.
-    printf("one\n");
+
     thread_socket_fd = st_wait();
-    printf("two\n");
+
     if (thread_socket_fd < 0)
     {
       fprintf (stderr, "Time out on thread %d.\n", st->id);
