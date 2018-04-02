@@ -86,6 +86,7 @@ st_process_requests (server_thread * st, int socket_fd)
       break;
     char *args = NULL; size_t args_len = 0;
     ssize_t cnt = getline (&args, &args_len, socket_r);
+
     if (!args || cnt < 1 || args[cnt - 1] != '\n')
     {
       printf ("Thread %d received incomplete cmd=%s!\n", st->id, cmd);
@@ -94,7 +95,7 @@ st_process_requests (server_thread * st, int socket_fd)
 
     printf ("Thread %d received the command: %s%s", st->id, cmd, args);
 
-    if (strcmp(cmd,"INI") == 0) {
+    if (strcmp(cmd,"PRO") == 0) {
       
     } else if (strcmp(cmd,"REQ") == 0) {
 
@@ -137,21 +138,23 @@ void *
 st_code (void *param)
 {
   server_thread *st = (server_thread *) param;
-  
+
   int thread_socket_fd = -1;
 
   // Boucle de traitement des requêtes.
   while (accepting_connections)
   {
     // Wait for a I/O socket.
+    printf("one\n");
     thread_socket_fd = st_wait();
+    printf("two\n");
     if (thread_socket_fd < 0)
     {
       fprintf (stderr, "Time out on thread %d.\n", st->id);
       continue;
     }
 
-    if (thread_socket_fd > 0)
+    if (thread_socket_fd >= 0)
     {
       st_process_requests (st, thread_socket_fd);
       close (thread_socket_fd);

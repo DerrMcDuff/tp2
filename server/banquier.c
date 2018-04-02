@@ -85,3 +85,6 @@ prepare_with(int clients_nb, int r_n)
   //  client_processes[i] = malloc (ressource_nb * sizeof (int));
   // }
 }
+
+void
+provision_with()
