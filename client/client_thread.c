@@ -202,12 +202,10 @@ create_INI_thread(ct)
     } else if(strncmp(strtok(NULL, " "),"CLO", 3) == 0){
       
     }
-  
-  }else {
     perror("Request not valid.");
     exit(1);
   }
-}
+
 
 void *
 ct_code (void *param)
