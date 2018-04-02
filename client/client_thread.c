@@ -180,8 +180,8 @@ create_INI_thread(int ctid)
 void *
 ct_code (void *param)
 {
-  int socket_fd = ct_socket();
   client_thread *ct = (client_thread *) param;
+  int socket_fd = ct_socket();
   FILE *socket_w = fdopen (socket_fd, "w");
   // TP2 TODO
   char request[64];
