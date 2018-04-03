@@ -33,6 +33,7 @@ main (int argc, char *argv[])
     
   send_client_amount (num_resources, num_clients);
   send_server_resources();
+
   // exit(0);
 
   client_thread *client_threads
