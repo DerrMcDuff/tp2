@@ -14,8 +14,8 @@ main (int argc, char *argv[])
   
   port_number = atoi (argv[1]);
   int num_clients = atoi (argv[2]);
-  num_request_per_client = atoi (argv[3]);
-  num_resources = argc - 4;
+  int num_request_per_client = atoi (argv[3]);
+  int num_resources = argc - 4;
   
 
   
@@ -31,7 +31,8 @@ main (int argc, char *argv[])
     send_max_resources (provisioned_resources[i], i);
   }
     
-  // send_client_amount (num_resources, num_clients);
+  send_client_amount (num_resources, num_clients);
+  send_server_resources();
   // exit(0);
 
   client_thread *client_threads
