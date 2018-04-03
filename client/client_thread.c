@@ -215,7 +215,14 @@ send_server_ressources(int *ressources)
   request_sent = request_sent + 1;
   int socket = ct_socket();
   FILE *socket_w = fdopen (socket, "w");
-  fprintf (socket_w, "PRO %d %d\n",ressource_nb,client_nb);
+  
+  char request[64] = "PRO ";
+  for(int i=0; i<num_resources; i++){
+    sprintf(request, "%d ", *(provisioned_resources+i));
+  }
+  sprintf(request, "%d ", "\n");
+  
+  
   fflush(socket_w);
 }
 
