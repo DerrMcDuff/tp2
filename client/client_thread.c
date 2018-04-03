@@ -65,28 +65,36 @@ random_ressources_request (int max_res, int live_res)
 void 
 ct_server_response(char req[])
 {
-    char reponse[64]; // reponse du serveur
+    char reponse[16]; // reponse du serveur
+    FILE *socket_r = fdopen (socket_fd, "r");
 
     if(read(socket_fd, reponse ,255) < 0){
       perror("ERROR reading from socket");
     } 
     else {
-      if(strncmp(reponse, "ACK", 3) == 0){
+      
+      char *rep = strtok(reponse, " ");
+      
+      if(strcmp(rep, "ACK") == 0){
         count_accepted ++;
       }
-      else if(strncmp(reponse, "ERR", 3)==0){
+      else if(strcmp(rep, "ERR") == 0){
         count_invalid ++;
       }
-      else if(strncmp(reponse, "WAIT", 4)==0){
+      else if(strcmp(rep, "WAIT") == 0){
         count_on_wait ++;
-        
+        int time = atoi(strtok(NULL, " "));
+
         //Tant que la requete n'a pas ete acceptee par le serveur
-        //le client lui la renvoie
+        //le client attend le temps que le serveur lui a dit d'attendre
+        //et ensuite lui la renvoie
         while(strncmp(reponse, "ACK", 3) == 0){
+          sleep(time);
           write(socket_fd, req, 64);
         }
       }
     }
+    fflush(socket_r);
 }
 
 void
@@ -141,7 +149,19 @@ send_requests (int client_id, int socket_fd)
       
     }
     
-    // TP2 TODO:END
+    //Si toutes les requetes ont ete envoyees par le client_thread
+    //Il annonce sa fermeture
+    
+    if (count_accepted == num_request_per_client){
+      char request[64];
+      strcpy(request, "CLO ");
+      sprintf(request, "%d ", socket_fd);
+      if(write(socket_fd, request, 64) < 0){
+        perror("Send failed");
+        exit(1);
+      }
+    }
+    
 
 }
 
@@ -225,7 +245,9 @@ ct_code (void *param)
   
   //Envoie des requetes de facon aleatoire 
   send_requests (ct->id, socket_fd);
-
+  
+  fflsuh(socket_w);
+  fclose(socket_w);
   return NULL;
 }
 
@@ -236,12 +258,17 @@ ct_code (void *param)
 // de ses requêtes avant de terminer l'exécution.
 //
 void
-ct_wait_server (client_thread *ct)
+ct_wait_server ()
 {
+  while((count_accepted + count_invalid) != num_request_per_client){
+   sleep (4); 
+  }
   
-  
-  sleep (4);
-  
+  count_dispatched ++;
+  char finish[16];
+  strcpy(finish, "END");
+  write(socket_fd, finish, 64);
+
 }
 
 
