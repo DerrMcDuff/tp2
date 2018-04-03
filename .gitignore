@@ -10,3 +10,4 @@ build/client/client_thread.o
 >>>>>>> 991eede1aca9fe615570c0b7db6e1eecc33dc80f
 build/tp2_client
 *.o
+*.o

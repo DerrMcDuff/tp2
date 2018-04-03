@@ -243,7 +243,7 @@ void add_request(Request **requests, int *ressources, int client)
     current->next = malloc(sizeof(Request));
     current->req = malloc(ressource_nb * sizeof(int));
     current->req = ressources;
-    current->next->demandeur = get_process(client);;
+    current->next->demandeur = get_process(client);
     current->next->next = NULL;
   }
 }

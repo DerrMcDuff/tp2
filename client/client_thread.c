@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 
 int port_number = -1;
 int num_request_per_client = -1;
@@ -135,11 +136,7 @@ send_requests (int client_id, int socket_fd)
         }
         
         //rajouter la requete de cette ressource
-<<<<<<< HEAD
         sprintf(request, "%d", socket_fd);
-=======
-        sprintf(request, "%d ", req);
->>>>>>> 9d06d82dd7c632b3e4e8f7efd4b2e86d4935daa3
       }
       
       if(write(socket_fd, request, 64) < 0){
@@ -156,9 +153,7 @@ send_requests (int client_id, int socket_fd)
           ct_server_response(request);
       }
       
-<<<<<<< HEAD
       if(send(socket_fd, request, sizeof(request),0) < 0){
-=======
     }
     
     //Si toutes les requetes ont ete envoyees par le client_thread
@@ -169,15 +164,13 @@ send_requests (int client_id, int socket_fd)
       strcpy(request, "CLO ");
       sprintf(request, "%d ", socket_fd);
       if(write(socket_fd, request, 64) < 0){
->>>>>>> 9d06d82dd7c632b3e4e8f7efd4b2e86d4935daa3
         perror("Send failed");
         exit(1);
       }
 
 
     }
-    
-
+  }
 }
 
 int
@@ -201,28 +194,31 @@ ct_socket()
   return client_socket;
 }
 
-void
-send_test(void *param) {
-  request_sent = request_sent + 1;
-  int socket = ct_socket();
-  FILE *socket_w = fdopen (socket, "w");
-  fprintf (socket_w, "BEG 6\n");
-  fflush(socket_w);
-}
-
 void 
 send_max_resources(int res, int counter){
     *(max_resources + counter) = res;
 }
 
 void
-send_client_amount(int ressource_nb, int client_nb){
+send_client_amount(int ressource_nb, int client_nb)
+{
   request_sent = request_sent + 1;
   int socket = ct_socket();
   FILE *socket_w = fdopen (socket, "w");
   fprintf (socket_w, "BEG %d %d\n",ressource_nb,client_nb);
   fflush(socket_w);
 }
+
+void
+send_server_ressources(int *ressources)
+{
+  request_sent = request_sent + 1;
+  int socket = ct_socket();
+  FILE *socket_w = fdopen (socket, "w");
+  fprintf (socket_w, "PRO %d %d\n",ressource_nb,client_nb);
+  fflush(socket_w);
+}
+
 
 //Fonction qui donne la valeur max des ressources d'un client-thread
 void 
@@ -261,7 +257,7 @@ ct_code (void *param)
   //Envoie des requetes de facon aleatoire 
   send_requests (ct->id, socket_fd);
   
-  fflsuh(socket_w);
+  // fflsuh(socket_w);
   fclose(socket_w);
   return NULL;
 }
@@ -291,7 +287,7 @@ void
 ct_init (client_thread * ct)
 {
   ct->id = count++;
-} 
+}
 
 void
 ct_create_and_start (client_thread * ct)
