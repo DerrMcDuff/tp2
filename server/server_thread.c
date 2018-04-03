@@ -102,9 +102,22 @@ st_process_requests (server_thread * st, int socket_fd)
         available[i] = atoi (&args[i+2]);
       }
     } else if (strcmp(cmd,"REQ") == 0) {
-      
+      int req_ress[ressource_nb];
+      for (unsigned int i = 0; i < ressource_nb; i++) 
+      {
+        req_ress[i] = atoi (&args[3+i]);
+      }
+      int pid = atoi (&args[2]);
+      add_request(&incoming_requests,req_ress,pid);
     } else if (strcmp(cmd,"INI") == 0) {
-      
+      int max_ress[ressource_nb];
+      for (unsigned int i = 0; i < ressource_nb; i++) 
+      {
+        max_ress[i] = atoi (&args[3+i]);
+      }
+      int pid = atoi (&args[2]);
+      add_client(pid,max_ress);
+
     } else if (strcmp(cmd,"BEG") == 0) {
       nb_of_client = atoi (&args[3]);
       int nb_ressourceeee = atoi (&args[2]);
@@ -313,7 +326,7 @@ evaluate_incoming_requests()
     evaluate_request(current);
     current = current->next;
   }
-  
+  incoming_requests = unsatisfied_requests;
 }
 
 int

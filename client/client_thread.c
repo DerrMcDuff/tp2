@@ -211,7 +211,7 @@ send_client_amount(int ressource_nb, int client_nb)
 }
 
 void
-send_server_ressources(int *ressources)
+send_server_ressources()
 {
   request_sent = request_sent + 1;
   int socket = ct_socket();
