@@ -221,8 +221,7 @@ send_server_ressources(int *ressources)
   for(int i=0; i<num_resources; i++){
     sprintf(request, "%d ", *(provisioned_resources+i));
   }
-  sprintf(request, "%d ", "\n");
-  
+  sprintf(request, "%s ", "\n");
   
   fflush(socket_w);
 }

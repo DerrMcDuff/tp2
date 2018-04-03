@@ -31,7 +31,8 @@ main (int argc, char *argv[])
     send_max_resources (provisioned_resources[i], i);
   }
     
-  // send_client_amount (num_resources, num_clients);
+  send_client_amount (num_resources, num_clients);
+  send_server_ressources();
   // exit(0);
 
   client_thread *client_threads
