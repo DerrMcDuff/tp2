@@ -21,6 +21,8 @@ int num_resources = -1;
 int *provisioned_resources = NULL;
 int *max_resources = NULL;
 int *max_resources_per_client = NULL;
+int socket_fd;
+
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
 
@@ -40,13 +42,6 @@ unsigned int count_dispatched = 0;
 // Nombre total de requêtes envoyées.
 unsigned int request_sent = 0;
 
-
-// Vous devez modifier cette fonction pour faire l'envoie des requêtes
-// Les ressources demandées par la requête doivent être choisies aléatoirement
-// (sans dépasser le maximum pour le client). Elles peuvent être positives
-// ou négatives.
-// Assurez-vous que la dernière requête d'un client libère toute les ressources
-// qu'il a jusqu'alors accumulées.
 
 int 
 random_ressources_request (int max_res, int live_res)
@@ -71,18 +66,56 @@ random_ressources_request (int max_res, int live_res)
   return req;
 }
 
+//Fonction qui gere les reponses du serveur
+void 
+ct_server_response(char req[])
+{
+    char reponse[16]; // reponse du serveur
+    FILE *socket_r = fdopen (socket_fd, "r");
+
+    if(read(socket_fd, reponse ,255) < 0){
+      perror("ERROR reading from socket");
+    } 
+    else {
+      
+      char *rep = strtok(reponse, " ");
+      
+      if(strcmp(rep, "ACK") == 0){
+        count_accepted ++;
+      }
+      else if(strcmp(rep, "ERR") == 0){
+        count_invalid ++;
+      }
+      else if(strcmp(rep, "WAIT") == 0){
+        count_on_wait ++;
+        int time = atoi(strtok(NULL, " "));
+
+        //Tant que la requete n'a pas ete acceptee par le serveur
+        //le client attend le temps que le serveur lui a dit d'attendre
+        //et ensuite lui la renvoie
+        while(strncmp(reponse, "ACK", 3) == 0){
+          sleep(time);
+          write(socket_fd, req, 64);
+        }
+      }
+    }
+    fflush(socket_r);
+}
+
 void
-send_request (int client_id, int request_id, int socket_fd)
+send_requests (int client_id, int socket_fd)
 {
   // TP2 TODO
    
     char request[64] = "REQ ";
     sprintf(request, "%d ", socket_fd);
     
-    fprintf (stdout, "Client %d is sending its %d request\n", client_id,
-        request_id);
-
+    //Boucle qui genere des requetes aleatoires par client
     for (int i = 0; i < num_request_per_client ; i++) {
+      
+      fprintf (stdout, "Client %d is sending its %d request\n", client_id, i);
+
+      //Boucle qui genere les ressources demandees par requete
       for (int j = 0; j < num_resources; j++) {
         
         int req;
@@ -102,18 +135,48 @@ send_request (int client_id, int request_id, int socket_fd)
         }
         
         //rajouter la requete de cette ressource
+<<<<<<< HEAD
         sprintf(request, "%d", socket_fd);
+=======
+        sprintf(request, "%d ", req);
+>>>>>>> 9d06d82dd7c632b3e4e8f7efd4b2e86d4935daa3
       }
       
+      if(write(socket_fd, request, 64) < 0){
+        perror("Send failed");
+        exit(1);
+      } else {
+        
+          usleep (random () % (100 * 1000));
+          /* Attendre un petit peu (0s-0.1s) pour simuler le calcul.  */
+          /* struct timespec delay;
+            * delay.tv_nsec = random () % (100 * 1000000);
+            * delay.tv_sec = 0;
+            * nanosleep (&delay, NULL); */
+          ct_server_response(request);
+      }
       
+<<<<<<< HEAD
       if(send(socket_fd, request, sizeof(request),0) < 0){
+=======
+    }
+    
+    //Si toutes les requetes ont ete envoyees par le client_thread
+    //Il annonce sa fermeture
+    
+    if (count_accepted == num_request_per_client){
+      char request[64];
+      strcpy(request, "CLO ");
+      sprintf(request, "%d ", socket_fd);
+      if(write(socket_fd, request, 64) < 0){
+>>>>>>> 9d06d82dd7c632b3e4e8f7efd4b2e86d4935daa3
         perror("Send failed");
         exit(1);
       }
 
 
     }
-    // TP2 TODO:END
+    
 
 }
 
@@ -178,46 +241,30 @@ void *
 ct_code (void *param)
 {
   client_thread *ct = (client_thread *) param;
-  int socket_fd = ct_socket();
+  socket_fd = ct_socket();
   FILE *socket_w = fdopen (socket_fd, "w");
   
   // TP2 TODO
   
   //Initialisation d'un client-thread 
-  char request[64];
-  strcpy(request, "INI ");
-  sprintf(request, "%d ", ct->id);
+  char clientIni[64];
+  strcpy(clientIni, "INI ");
+  sprintf(clientIni, "%d ", ct->id);
   create_max_resources_for_client();
   for(int i = 0; i < num_request_per_client; i++)
-    sprintf(request, "%d ", *(max_resources_per_client + i));
-  sprintf(request, "\n ");
+    sprintf(clientIni, "%d ", *(max_resources_per_client + i));
+  sprintf(clientIni, "\n ");
 
   //envoie de la requete sur socket_w
-  fputs(request, socket_w);
+  fputs(clientIni, socket_w);
   
-  // TP2 TODO:END
-
-
-  for (unsigned int request_id = 0; request_id < num_request_per_client;
-      request_id++)
-  {
-    // TP2 TODO
-
-    send_request (ct->id, request_id, socket_fd);
-
-    // TP2 TODO:END
-
-    /* Attendre un petit peu (0s-0.1s) pour simuler le calcul.  */
-    usleep (random () % (100 * 1000));
-    /* struct timespec delay;
-     * delay.tv_nsec = random () % (100 * 1000000);
-     * delay.tv_sec = 0;
-     * nanosleep (&delay, NULL); */
-  }
-
+  //Envoie des requetes de facon aleatoire 
+  send_requests (ct->id, socket_fd);
+  
+  fflsuh(socket_w);
+  fclose(socket_w);
   return NULL;
 }
-
 
 //
 // Vous devez changer le contenu de cette fonction afin de régler le
@@ -228,14 +275,15 @@ ct_code (void *param)
 void
 ct_wait_server ()
 {
-
-  // TP2 TODO: IMPORTANT code non valide.
-
-
-  sleep (4);
-
-  // TP2 TODO:END
+  while((count_accepted + count_invalid) != num_request_per_client){
+   sleep (4); 
+  }
   
+  count_dispatched ++;
+  char finish[16];
+  strcpy(finish, "END");
+  write(socket_fd, finish, 64);
+
 }
 
 
@@ -254,8 +302,7 @@ ct_create_and_start (client_thread * ct)
 }
 
 //
-// Affiche les données recueillies lors de l'exécution du
-// serveur.
+// Affiche les données recueillies lors de l'exécution du serveur.
 // La branche else ne doit PAS être modifiée.
 //
 void

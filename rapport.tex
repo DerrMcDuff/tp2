@@ -6,12 +6,24 @@
 \usepackage[french]{babel}
 
 \title{Travail pratique \#2 - IFT-2245}
-\author{Moi et L'autre} 
+\author{Olga Fadeitcheva et Dereck McDuff} 
 \begin{document}
 
 \maketitle
 
-allo comment ça va?
-%% ¡¡ REMPLIR ICI !!
+\section{Multithreading}
+
+\section{Deadlock avoidance}
+
+Le deadlock avoidance a été effectué grâce à l'algorithme du banquier. On l'a implémenté en utilisant une liste chainée pour stocker l'ordre des requêtes à effectuer, tout en sachant d'avance le nombre de requêtes, le nombre maximal de chaque requête et le nombre de client threads. À chaque compte d'un timer, l'algo
+
+\section{Sockets}
+	Afin de comprendre les connexions des sockets, il fallait qu'on comprend bien la différence entre les rôles du serveur et du client. Il n'était pas évident au début de comprendre que les commandes BEG, PRO, et END sont fait par le client une seule fois, et ce par un thread parent du client. Pour ces commandes d'initialisation de serveur on a décidé qu'elles allaient être rentrées manuellement en indiquant les paramètres des ressources. Ensuite, les commandes INI, REQ et CLO implémentés dans le client thread, étant des commandes propres au thread lui-même, devaient être envoyées au serveur via la fonction write. On a décidé de générer les requêtes de chacun des serveurs aléatoirement, avec un simple algorithme, tout en faisant attention qu'à la dernière requête toutes les ressources allouées à un client thread soient libérés. On a également généré aléatoirement le maximum que chaque client thread a de chaque type des ressources, tout en faisant attention au nombre maximal de ressources existantes de chaque type. Dépendement de la réponse que le client thread recoit, il continue à faire des requêtes (dans le cas d'un ERR ou ACK), ou attend un peu et refait la même requête (dans le cas d'un WAIT).
+	Du côté du serveur, ...
+	
+	Il fallait également toujours prêter l'attention si c'était une connexion de type read ou write, et toujours faire attention de fflush le fichier de stream.
+
+\section{Difficultés}
+Ce TP nous a demandé beaucoup de temps pour comprendre par où commencer et comment. Une fois avoir saisit les principes de bases des sockets, on a pu commmencer à configurer les structures des requêtes, des réponses, et de la correspondance entre le client et le serveur. La conception de l'algorithme du banquier a du être bien pensé en fonction de ce qui est donnée et de ce qui est retournée. Malheureusement, après la conception de fichier du client thread, un segmentation fault nous a empêché de tester la demande des requêtes aléatoires, et de la gestion des réponses donnés au client. 
 
 \end{document}
