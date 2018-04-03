@@ -6,7 +6,6 @@ int
 main (int argc, char *argv[])
 {
   
-  
   if (argc < 5) {
     fprintf (stderr, "Usage: %s <port-nb> <nb-clients> <nb-requests> <resources>...\n",
         argv[0]);
@@ -32,8 +31,8 @@ main (int argc, char *argv[])
     send_max_resources (provisioned_resources[i], i);
   }
     
-  send_client_amount (num_resources, num_clients);
-  exit(0);
+  // send_client_amount (num_resources, num_clients);
+  // exit(0);
 
   client_thread *client_threads
     = malloc (num_clients * sizeof (client_thread));

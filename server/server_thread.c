@@ -56,12 +56,6 @@ unsigned int clients_ended = 0;
 
 // TODO: Ajouter vos structures de données partagées, ici.
 
-// int main(int argc, char const *argv[])
-// {
-  
-//   return 0;
-// }
-
 static void sigint_handler(int signum) {
   // Code terminaison.
   accepting_connections = 0;
@@ -73,8 +67,7 @@ st_init ()
   printf("hello");
   // Handle interrupt
   signal(SIGINT, &sigint_handler);
-
-
+  
   // TODO
 
 }
@@ -105,7 +98,7 @@ st_process_requests (server_thread * st, int socket_fd)
     if (strcmp(cmd,"PRO") == 0) {
       
     } else if (strcmp(cmd,"REQ") == 0) {
-
+      
     } else if (strcmp(cmd,"CLO") == 0) {
       
     } else if (strcmp(cmd,"BEG") == 0) {

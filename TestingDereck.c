@@ -1,61 +1,38 @@
+/* This `define` tells unistd to define usleep and random.  */
+#define _XOPEN_SOURCE 500
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-typedef struct request {
-    int value;
-    struct request *next;
-} request;
-
-request *requests = NULL;
-
-void add_request(request **requests, int *value)
+int 
+random_ressources_request (int max_res, int live_res)
 {
-	if (*requests == NULL)
-	{
-		*requests = malloc(sizeof(request));
-		(*requests)->value = value;
-		(*requests)->next = NULL;
-	}
-	else
-	{
-		request *current = (*requests);
-		while (current->next != NULL) 
-		{
-        	current = current->next;
-    	}
-    	current->next = malloc(sizeof(request));
-    	current->next->value = value;
-    	current->next->next = NULL;
-	}
+  //on choisit une qte aleatoire de la meme ressource par requete
+  //sans depasser le maximum pour le client
+  //on choisit aleatoire si on demande ou si on libere une ressource
+  int req;
+  int r = rand()%(max_res);
+  while((r+live_res > max_res) && (-r+live_res > max_res)){
+   r = rand()%(max_res); 
+  }
+  int b = rand()%2;
+  if(b==0) {
+    req = r;
+  }
+  else 
+  {
+    req = -r;
+  }
+
+  return req;
 }
 
-void remove_first(request **requests) {
-	request *old = *requests;
-	*requests = (*requests)->next;
-	free(old);
-}
-
-void print_requests(request **requests) {
-	printf("%d\n",(*requests)->value);
-	request *current = (*requests);
-	while (current->next != NULL) {
-		printf("%d\n",current->next->value);
-        current = current->next;
-    }
-}
 
 int main(int argc, char const *argv[])
 {
-
-	add_request(&requests,5);
-	add_request(&requests,8);
-	print_requests(&requests);
-	remove_first(&requests);
-	print_requests(&requests);
-	return 0;
+  int a = random_ressources_request(10000,6);
+  printf("%d\n", a);
+  return 0;
 }
-
-
-
-

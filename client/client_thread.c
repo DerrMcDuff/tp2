@@ -9,7 +9,7 @@
 #include "client_thread.h"
 
 // Socket library
-//#include <netdb.h>
+#include <netdb.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -23,7 +23,6 @@ int *max_resources = NULL;
 int *max_resources_per_client = NULL;
 // Variable d'initialisation des threads clients.
 unsigned int count = 0;
-
 
 // Variable du journal.
 // Nombre de requête acceptée (ACK reçus en réponse à REQ)
@@ -57,12 +56,17 @@ random_ressources_request (int max_res, int live_res)
   //on choisit aleatoire si on demande ou si on libere une ressource
   int req;
   int r = rand()%(max_res);
-  while((r+live_res > max_res) || (-r+live_res > max_res)){
+  while((r+live_res > max_res) && (-r+live_res > max_res)){
    r = rand()%(max_res); 
   }
   int b = rand()%2;
-  if(b==0) req = r;
-  else req = -r;
+  if(b==0) {
+    req = r;
+  }
+  else 
+  {
+    req = -r;
+  }
 
   return req;
 }
@@ -72,8 +76,7 @@ send_request (int client_id, int request_id, int socket_fd)
 {
   // TP2 TODO
    
-    char request[64];
-    strcpy(request, "REQ ");
+    char request[64] = "REQ ";
     sprintf(request, "%d ", socket_fd);
     
     fprintf (stdout, "Client %d is sending its %d request\n", client_id,
@@ -88,24 +91,27 @@ send_request (int client_id, int request_id, int socket_fd)
         
         //si c'est la derniere requete il faut s'assurer que toutes 
         //les ressources sont liberees
-        if(i == num_request_per_client) {
+        if (i == num_request_per_client) {
           req = -(prov_res);
         }
         
         //sinon on alloue (ou libere) un nombre aleatoire de ressources
-        else {
+        else 
+        {
           req = random_ressources_request(max_res, prov_res);
         }
         
         //rajouter la requete de cette ressource
-        sprintf(request, "%d ", socket_fd);
+        sprintf(request, "%d", socket_fd);
       }
       
       
-      if(send(socket_fd, request, 64, 0) < 0){
+      if(send(socket_fd, request, sizeof(request),0) < 0){
         perror("Send failed");
         exit(1);
       }
+
+
     }
     // TP2 TODO:END
 
@@ -147,7 +153,7 @@ send_max_resources(int res, int counter){
 }
 
 void
-send_client_amount(int ressource_nb, int client_nb) {
+send_client_amount(int ressource_nb, int client_nb){
   request_sent = request_sent + 1;
   int socket = ct_socket();
   FILE *socket_w = fdopen (socket, "w");
