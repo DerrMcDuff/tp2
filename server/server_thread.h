@@ -23,6 +23,6 @@ void st_open_socket (int port_number);
 void st_init (void);
 void st_process_request (server_thread *, int);
 void *st_code (void *);
-//void st_create_and_start(st);
+
 void st_print_results (FILE *, bool);
 #endif

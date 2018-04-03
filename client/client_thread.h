@@ -36,6 +36,6 @@ void ct_wait_server ();
 void st_print_results (FILE *, bool);
 void send_client_amount (int ressource_nb, int client_nb);
 void send_max_resources (int max_prov_res, int number_of_id);
-void send_server_ressources(int *ressources);
+void send_server_ressources();
 
 #endif // CLIENTTHREAD_H

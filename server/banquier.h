@@ -38,6 +38,7 @@ void print_requests(Request **requests);
 void evaluate_incoming_requests();
 int evaluate_request(Request* request);
 void prepare_with(int clients_nb, int r_n);
+void add_client(int pid,int *max);
 Client_Process *get_process(int id);
 
 #endif
