@@ -67,15 +67,14 @@ st_init ()
 {
   // Handle interrupt
   signal(SIGINT, &sigint_handler);
-  
-  // TODO
+
+  // L'initialisation du banquier sera handle avec des messages du client
 
 }
 
 void
 st_process_requests (server_thread * st, int socket_fd)
 {
-  // TODO: Remplacer le contenu de cette fonction
   FILE *socket_r = fdopen (socket_fd, "r");
   FILE *socket_w = fdopen (socket_fd, "w");
 
