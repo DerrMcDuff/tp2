@@ -106,7 +106,6 @@ ct_server_response(char req[])
 void
 send_requests (int client_id, int socket_fd)
 {
-  // TP2 TODO
    
     char request[64] = "REQ ";
     sprintf(request, "%d ", socket_fd);
@@ -128,7 +127,6 @@ send_requests (int client_id, int socket_fd)
         if (i == num_request_per_client) {
           req = -(prov_res);
         }
-        
         //sinon on alloue (ou libere) un nombre aleatoire de ressources
         else 
         {

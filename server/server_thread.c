@@ -32,7 +32,8 @@ enum {
 int server_socket_fd;
 
 // Nombre de client enregistré.
-int nb_registered_clients;
+int nb_registered_clients = 0;
+int nb_of_client;
 
 // Variable du journal.
 // Nombre de requêtes acceptées immédiatement (ACK envoyé en réponse à REQ).
@@ -64,7 +65,6 @@ static void sigint_handler(int signum) {
 void
 st_init ()
 {
-  printf("hello");
   // Handle interrupt
   signal(SIGINT, &sigint_handler);
   
@@ -96,16 +96,19 @@ st_process_requests (server_thread * st, int socket_fd)
     printf ("Thread %d received the command: %s%s", st->id, cmd, args);
 
     if (strcmp(cmd,"PRO") == 0) {
-      
+      available = malloc (ressource_nb * sizeof (int));
+      for(int i = 0;i<ressource_nb;i++)
+      {
+        available[i] = atoi (&args[i+2]);
+      }
     } else if (strcmp(cmd,"REQ") == 0) {
       
-    } else if (strcmp(cmd,"CLO") == 0) {
+    } else if (strcmp(cmd,"INI") == 0) {
       
     } else if (strcmp(cmd,"BEG") == 0) {
-
-      nb_registered_clients = atoi (&args[3]);
+      nb_of_client = atoi (&args[3]);
       int nb_ressourceeee = atoi (&args[2]);
-      prepare_with(nb_registered_clients, nb_ressourceeee);
+      prepare_with(nb_of_client, nb_ressourceeee);
     }
 
     fprintf (socket_w, "ERR Unknown command\n");
@@ -274,8 +277,6 @@ void remove_first(Request **requests)
   free(old);
 }
 
-
-
 Client_Process *get_process(int id)
 {
   for (int i = 0; i<nb_registered_clients; i++) 
@@ -345,7 +346,12 @@ prepare_with(int clients_nb, int r_n)
   }
 }
 
-
+void add_client(int pid,int *max)
+{
+  client_processes[nb_registered_clients].id = pid;
+  client_processes[nb_registered_clients].max = max;
+  nb_registered_clients = nb_registered_clients + 1;
+}
 
 
 
